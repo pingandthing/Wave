@@ -15,10 +15,12 @@ const server = http.createServer((req, res) => { //runs everytime its loaded
     var newRoom = queryObject.query.room
     if(rooms.includes(newRoom)){
       console.log("Room already exists")
+      ret.creationStatus = false
     }
     else{
       //create room
       rooms.push(newRoom)
+      ret.creationStatus = true
       //go from there
     }
    }
