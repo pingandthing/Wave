@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+
 const hostname = '127.0.0.1';
 const port = 3000;
 
@@ -8,6 +9,7 @@ rooms = ["General"]
 const server = http.createServer((req, res) => { //runs everytime its loaded
   ret = {}
   res.statusCode = 200;
+
    const queryObject = url.parse(req.url,true);
    console.log(queryObject)
 
@@ -26,6 +28,10 @@ const server = http.createServer((req, res) => { //runs everytime its loaded
    }
 
   console.log(rooms)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  	res.setHeader('Access-Control-Request-Method', '*');
+  	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+  	res.setHeader('Access-Control-Allow-Headers', '*');
   res.setHeader('Content-Type', 'application/json');
   ret.rooms = rooms
   res.end(JSON.stringify(ret));
