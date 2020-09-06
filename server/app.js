@@ -5,6 +5,7 @@ const hostname = "127.0.0.1";
 const port = 3000;
 
 rooms = ["General"];
+connections = [];
 
 const server = http.createServer((req, res) => {
   //runs everytime its loaded
@@ -72,11 +73,16 @@ wsServer.on("request", function (request) {
   }
 
   var connection = request.accept("echo-protocol", request.origin);
+  connections.push(connection);
   console.log(new Date() + " Connection accepted.");
   connection.on("message", function (message) {
+    console.log(connection);
     if (message.type === "utf8") {
       console.log("Received Message: " + message.utf8Data);
-      connection.sendUTF(message.utf8Data);
+      //  connection.sendUTF(message.utf8Data);
+      connections.forEach(function (client) {
+        client.send(message.utf8Data);
+      });
     } else if (message.type === "binary") {
       console.log(
         "Received Binary Message of " + message.binaryData.length + " bytes"

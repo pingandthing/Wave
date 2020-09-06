@@ -1,14 +1,28 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Landing from "../components/Landing.vue";
+import Host from "../components/Host.vue";
+import Join from "../components/Join.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "Landing",
+    component: Landing
+  },
+  {
+    path: "/host/:room",
+    name: "Host",
+    component: Host,
+    props: true
+  },
+  {
+    path: "/join/:room",
+    name: "Join",
+    component: Join,
+    props: true
   },
   {
     path: "/about",

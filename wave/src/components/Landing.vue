@@ -31,7 +31,33 @@
         </v-dialog>
       </v-col>
       <v-col align="center" justify="center">
-        <v-btn>Join a room</v-btn>
+        <v-dialog v-model="joinDialog" persistent>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on">
+              Join a Room
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">Join Room</v-card-title>
+            <v-card-text>dsfdsfdsfsdfsdfdsfdsg.</v-card-text>
+            <v-text-field
+              label="Room Name"
+              placeholder="Enter Room Name Here"
+              outlined
+              v-model="newRoomName"
+              :error-messages="this.textCreateRoom.error"
+            ></v-text-field>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="error " text @click="joinDialog = false"
+                >Cancel</v-btn
+              >
+              <v-btn color="success" text @click="joinRoomHandler()"
+                >Join</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
     {{ this.rooms }}
@@ -48,9 +74,11 @@
 </template>
 
 <script>
-const api = "http://65d6f0cc736b.ngrok.io/";
+const api = "http://localhost:3000/";
 import axios from "axios";
 var W3CWebSocket = require("websocket").w3cwebsocket;
+import router from "../router";
+
 export default {
   name: "Landing",
 
@@ -59,9 +87,11 @@ export default {
     rooms: null,
     newRoomName: null,
     hostDialog: false,
+    joinDialog: false,
     textCreateRoom: {},
     alert: false,
-    alertText: "No Message"
+    alertText: "No Message",
+    client: null
   }),
   methods: {
     createRoomHandler() {
@@ -69,16 +99,36 @@ export default {
         .get(api + "createRoom?room=" + this.newRoomName)
         .then(response => {
           console.log(response);
-          if (response.data.creationStatus) this.hostDialog = false;
-          else {
-            this.newRoomName = null;
+          if (response.data.creationStatus) {
+            this.hostDialog = false;
+            router.push({
+              name: "Host",
+              params: { room: this.newRoomName }
+            });
+          } else {
             this.customAlert("Please try another room name!");
           }
+          this.newRoomName = null;
         })
         .catch(error => {
           console.log(error);
           // this.errored = true
         });
+    },
+    joinRoomHandler() {
+      if (this.rooms.includes(this.newRoomName)) {
+        this.joinDialog = false;
+        this.customAlert("Entering " + this.newRoomName);
+        router.push({
+          name: "Join",
+          params: { room: this.newRoomName }
+        });
+      } else {
+        this.customAlert(
+          this.newRoomName + "is an invalid room name, Try again!"
+        );
+      }
+      this.newRoomName = null;
     },
     customAlert(msg) {
       this.alertText = msg;
@@ -86,6 +136,7 @@ export default {
     }
   },
   mounted() {
+    var vueApp = this;
     console.log(this);
     axios
       .get(api)
@@ -98,30 +149,34 @@ export default {
       });
     // .finally(() => this.loading = false)
     // eslint-disable-line
-    var client = new W3CWebSocket("ws://localhost:3000/", "echo-protocol");
+    vueApp.client = new W3CWebSocket("ws://localhost:3000/", "echo-protocol");
 
-    client.onerror = function() {
+    vueApp.client.onerror = function() {
       console.log("Connection Error");
     };
 
-    client.onopen = function() {
+    vueApp.client.onopen = function() {
       console.log("WebSocket Client Connected");
+      var send = {};
+      send.room = "General";
+      send.message = "New User";
+      vueApp.client.send(JSON.stringify(send));
 
-      function sendNumber() {
-        if (client.readyState === client.OPEN) {
-          var number = Math.round(Math.random() * 0xffffff);
-          client.send(number.toString());
-          setTimeout(sendNumber, 1000);
-        }
-      }
-      sendNumber();
+      // function sendNumber() {
+      //   if (client.readyState === client.OPEN) {
+      //     var number = Math.round(Math.random() * 0xffffff);
+      //     client.send(number.toString());
+      //     setTimeout(sendNumber, 1000);
+      //   }
+      // }
+      // sendNumber();
     };
 
-    client.onclose = function() {
+    vueApp.client.onclose = function() {
       console.log("echo-protocol Client Closed");
     };
 
-    client.onmessage = function(e) {
+    vueApp.client.onmessage = function(e) {
       if (typeof e.data === "string") {
         console.log("Received: '" + e.data + "'");
       }
