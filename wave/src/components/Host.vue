@@ -109,6 +109,14 @@ export default {
         window.location.origin + "/join/" + router.currentRoute.params.room
       );
       this.customAlert("Link Copied");
+    },
+    playWoosh() {
+      var context = new AudioContext();
+      if (context.state == "running") {
+        var audio = new Audio("woosh.mp3");
+        audio.volume = 1;
+        audio.play();
+      }
     }
   },
   mounted() {
@@ -150,6 +158,7 @@ export default {
 
         var wsData = JSON.parse(e.data);
         if (wsData.room == router.currentRoute.params.room) {
+          vueApp.playWoosh();
           console.log(wsData);
           if (wsData.wave) {
             vueApp.wave = true;
