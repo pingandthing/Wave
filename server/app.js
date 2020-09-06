@@ -28,11 +28,22 @@ const server = http.createServer((req, res) => {
     }
   } else if (queryObject.pathname == "/joinRoom") {
     var joinRoom = queryObject.query.room;
-    if (rooms.includes(newRoom)) {
+    if (rooms.includes(joinRoom)) {
       console.log("Room exists");
       ret.creationStatus = true;
     } else {
       ret.creationStatus = false;
+      //go from there
+    }
+  } else if (queryObject.pathname == "/deleteRoom") {
+    var delRoom = queryObject.query.room;
+    if (rooms.includes(delRoom)) {
+      rooms = rooms.filter(
+        (room) => room.toLowerCase() != delRoom.toLowerCase()
+      );
+      ret.deletionStatus = true;
+    } else {
+      ret.deletionStatus = false;
       //go from there
     }
   }

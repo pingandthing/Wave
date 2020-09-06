@@ -10,7 +10,7 @@
           </template>
           <v-card>
             <v-card-title class="headline">Create Room</v-card-title>
-            <v-card-text>dsfdsfdsfsdfsdfdsfdsg.</v-card-text>
+            <v-card-text>Create a room to receive questions</v-card-text>
             <v-text-field
               label="Room Name"
               placeholder="Create Room Here"
@@ -23,7 +23,11 @@
               <v-btn color="error " text @click="hostDialog = false"
                 >Cancel</v-btn
               >
-              <v-btn color="success" text @click="createRoomHandler()"
+              <v-btn
+                color="success"
+                text
+                :disabled="cancj"
+                @click="createRoomHandler()"
                 >Create</v-btn
               >
             </v-card-actions>
@@ -39,7 +43,9 @@
           </template>
           <v-card>
             <v-card-title class="headline">Join Room</v-card-title>
-            <v-card-text>dsfdsfdsfsdfsdfdsfdsg.</v-card-text>
+            <v-card-text
+              >Ask questions and get your much needed attention.</v-card-text
+            >
             <v-text-field
               label="Room Name"
               placeholder="Enter Room Name Here"
@@ -52,7 +58,11 @@
               <v-btn color="error " text @click="joinDialog = false"
                 >Cancel</v-btn
               >
-              <v-btn color="success" text @click="joinRoomHandler()"
+              <v-btn
+                color="success"
+                text
+                :disabled="cancj"
+                @click="joinRoomHandler()"
                 >Join</v-btn
               >
             </v-card-actions>
@@ -105,6 +115,13 @@ export default {
     alertText: "No Message",
     client: null
   }),
+  computed: {
+    cancj() {
+      if (this.newRoomName == null) return true;
+      if (this.newRoomName == "") return true;
+      return false;
+    }
+  },
   methods: {
     createRoomHandler() {
       axios
@@ -128,6 +145,7 @@ export default {
         });
     },
     joinRoomHandler() {
+      this.initRooms();
       if (this.rooms.includes(this.newRoomName)) {
         this.joinDialog = false;
         this.customAlert("Entering " + this.newRoomName);
@@ -146,21 +164,24 @@ export default {
     customAlert(msg) {
       this.alertText = msg;
       this.alert = true;
+    },
+    initRooms() {
+      axios
+        .get(api)
+        .then(response => {
+          this.rooms = response.data.rooms;
+        })
+        .catch(error => {
+          console.log(error);
+          // this.errored = true
+        });
+      // .finally(() => this.loading = false)
     }
   },
   mounted() {
-    var vueApp = this;
     console.log(this);
-    axios
-      .get(api)
-      .then(response => {
-        this.rooms = response.data.rooms;
-      })
-      .catch(error => {
-        console.log(error);
-        // this.errored = true
-      });
-    // .finally(() => this.loading = false)
+    var vueApp = this;
+    this.initRooms();
     // eslint-disable-line
     vueApp.client = new W3CWebSocket("ws://localhost:3000/", "echo-protocol");
 

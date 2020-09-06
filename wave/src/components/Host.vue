@@ -1,12 +1,18 @@
 <template>
   <v-container fluid>
     <v-row align="center">
-      <h2 class="mr-2">Room {{ $route.params.room }}</h2>
+      <h2 class="ms-2">Room {{ $route.params.room }}</h2>
       <v-switch
+        class="ms-2"
         v-model="wave"
         :label="`Wave: ${wave ? 'on' : 'off'}`"
         :disabled="messages.length < 1"
       ></v-switch>
+      <v-btn class="ms-2" @click="this.messages = []">Clear all messages</v-btn>
+      <v-btn class="ms-2" @click="deleteRoomHandler()">Delete Room</v-btn>
+      <v-btn class="ms-2" @click="joinLink()"
+        >Copy join link to Clipbpard</v-btn
+      >
     </v-row>
     <v-row align="center" justify="center">
       <v-col align="center" justify="center" v-if="wave">
@@ -82,6 +88,27 @@ export default {
       if (this.messages.length < 1) {
         this.wave = false;
       }
+    },
+    deleteRoomHandler() {
+      axios
+        .get(api + "deleteRoom?room=" + router.currentRoute.params.room)
+        .then(response => {
+          console.log(response);
+          if (response.data.deletionStatus) {
+            router.push({
+              name: "Landing"
+            });
+          } else {
+            this.customAlert("Room Deletion Failed");
+          }
+        });
+    },
+    joinLink() {
+      console.log(window);
+      navigator.clipboard.writeText(
+        window.location.origin + "/join/" + router.currentRoute.params.room
+      );
+      this.customAlert("Link Copied");
     }
   },
   mounted() {
