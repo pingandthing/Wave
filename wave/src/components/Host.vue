@@ -8,10 +8,17 @@
         :label="`Wave: ${wave ? 'on' : 'off'}`"
         :disabled="messages.length < 1"
       ></v-switch>
-      <v-btn class="ms-2" @click="this.messages = []">Clear all messages</v-btn>
+      <v-btn
+        class="ms-2"
+        @click="
+          messages = [];
+          wave = false;
+        "
+        >Clear all messages</v-btn
+      >
       <v-btn class="ms-2" @click="deleteRoomHandler()">Delete Room</v-btn>
       <v-btn class="ms-2" @click="joinLink()"
-        >Copy join link to Clipbpard</v-btn
+        >Copy join link to Clipboard</v-btn
       >
     </v-row>
     <v-row align="center" justify="center">
