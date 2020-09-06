@@ -4,7 +4,7 @@
     <v-row align="center" justify="center">
       <!-- {{ $route.params.room }} -->
 
-      <v-col cols="4" align="center" justify="center">
+      <v-col cols="12" align="center" justify="center" md="4" lg="4" xl="4">
         <v-text-field
           label="Name"
           placeholder="Enter your name"
@@ -12,7 +12,7 @@
           v-model="name"
         ></v-text-field>
       </v-col>
-      <v-col cols="6" align="center" justify="center">
+      <v-col cols="12" align="center" justify="center" md="6" lg="6" xl="6">
         <v-text-field
           label="Message"
           placeholder="Enter your message"
@@ -20,7 +20,7 @@
           v-model="message"
         ></v-text-field>
       </v-col>
-      <v-col cols="2" justify="center">
+      <v-col cols="12" justify="center" md="2" lg="2" xl="6">
         <v-btn @click="sendWaveHandler()">Wave Message</v-btn>
       </v-col>
     </v-row>
@@ -85,7 +85,7 @@ export default {
     // .finally(() => this.loading = false)
     // eslint-disable-line
     vueApp.client = new W3CWebSocket(
-      "ws://howave.herokuapp.com/",
+      "wss://howave.herokuapp.com/",
       "echo-protocol"
     );
 

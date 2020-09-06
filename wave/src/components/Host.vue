@@ -15,7 +15,15 @@
       >
     </v-row>
     <v-row align="center" justify="center">
-      <v-col align="center" justify="center" v-if="wave">
+      <v-col
+        align="center"
+        justify="center"
+        v-if="wave"
+        cols="12"
+        md="6"
+        lg="6"
+        xl="6"
+      >
         <v-img src="../images/wave.gif" height="65vh" :contain="true"></v-img>
       </v-col>
       <v-col
@@ -23,6 +31,10 @@
         justify="center"
         class="overflow-y-auto"
         style="height:65vh"
+        cols="12"
+        md="6"
+        lg="6"
+        xl="6"
       >
         <v-container height="65vh">
           <v-row dense>
@@ -104,9 +116,8 @@ export default {
         });
     },
     joinLink() {
-      console.log(window);
       navigator.clipboard.writeText(
-        window.location.origin + "/join/" + router.currentRoute.params.room
+        window.location.origin + "/Wave/join/" + router.currentRoute.params.room
       );
       this.customAlert("Link Copied");
     },
@@ -135,7 +146,7 @@ export default {
     // .finally(() => this.loading = false)
     // eslint-disable-line
     vueApp.client = new W3CWebSocket(
-      "ws://howave.herokuapp.com/",
+      "wss://howave.herokuapp.com/",
       "echo-protocol"
     );
 

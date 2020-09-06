@@ -184,7 +184,7 @@ export default {
     this.initRooms();
     // eslint-disable-line
     vueApp.client = new W3CWebSocket(
-      "ws://howave.herokuapp.com/",
+      "wss://howave.herokuapp.com/",
       "echo-protocol"
     );
 
