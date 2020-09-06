@@ -38,7 +38,7 @@
 </template>
 
 <script>
-const api = "http://localhost:3000/";
+const api = "https://howave.herokuapp.com/";
 
 import axios from "axios";
 var W3CWebSocket = require("websocket").w3cwebsocket;
@@ -84,7 +84,10 @@ export default {
       });
     // .finally(() => this.loading = false)
     // eslint-disable-line
-    vueApp.client = new W3CWebSocket("ws://localhost:3000/", "echo-protocol");
+    vueApp.client = new W3CWebSocket(
+      "ws://howave.herokuapp.com/",
+      "echo-protocol"
+    );
 
     vueApp.client.onerror = function() {
       console.log("Connection Error");

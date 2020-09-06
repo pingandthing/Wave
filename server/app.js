@@ -13,7 +13,6 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
 
   const queryObject = url.parse(req.url, true);
-  console.log(queryObject);
 
   if (queryObject.pathname == "/createRoom") {
     var newRoom = queryObject.query.room;
@@ -87,7 +86,6 @@ wsServer.on("request", function (request) {
   connections.push(connection);
   console.log(new Date() + " Connection accepted.");
   connection.on("message", function (message) {
-    console.log(connection);
     if (message.type === "utf8") {
       console.log("Received Message: " + message.utf8Data);
       //  connection.sendUTF(message.utf8Data);
