@@ -108,7 +108,7 @@ wsServer.on("request", function (request) {
   });
 });
 
-server.listen(port, hostname, () => {
+server.listen(port, () => {
   //runs when the server is ready
   console.log(`Server running at http://${hostname}:${port}/`);
 });
