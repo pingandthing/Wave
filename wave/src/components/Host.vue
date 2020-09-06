@@ -1,8 +1,39 @@
 <template>
   <v-container fluid>
+    <v-row align="center">
+      <h2 class="mr-2">Room {{ $route.params.room }}</h2>
+      <v-switch
+        v-model="wave"
+        :label="`Wave: ${wave ? 'on' : 'off'}`"
+        :disabled="messages.length < 1"
+      ></v-switch>
+    </v-row>
     <v-row align="center" justify="center">
-      {{ $route.params.room }}
-      <v-col align="center" justify="center"> </v-col>
+      <v-col align="center" justify="center" v-if="wave">
+        <v-img src="../images/wave.gif" height="65vh" :contain="true"></v-img>
+      </v-col>
+      <v-col
+        align="center"
+        justify="center"
+        class="overflow-y-auto"
+        style="height:65vh"
+      >
+        <v-container height="65vh">
+          <v-row dense>
+            <v-col cols="12" v-if="wave">
+              <v-card v-for="message in messages" :key="message" class="mt-4">
+                <v-card-title class="headline">{{ message.name }}</v-card-title>
+
+                <v-card-subtitle>{{ message.message }}</v-card-subtitle>
+
+                <v-card-actions>
+                  <v-btn text @click="dismissHandler(message)">Dismiss</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
     </v-row>
 
     <v-snackbar v-model="alert" :multi-line="true" timeout="7500">
@@ -23,6 +54,7 @@ const api = "http://localhost:3000/";
 import axios from "axios";
 import router from "../router";
 var W3CWebSocket = require("websocket").w3cwebsocket;
+
 export default {
   name: "Host",
 
@@ -30,12 +62,26 @@ export default {
     //
     alert: false,
     alertText: "No Message",
-    client: null
+    client: null,
+    wave: false,
+    waveImg: "../images/wave.gif",
+    messages: []
   }),
   methods: {
     customAlert(msg) {
       this.alertText = msg;
       this.alert = true;
+    },
+    getImgUrl(pic) {
+      return require(pic);
+    },
+    dismissHandler(input) {
+      this.messages = this.messages.filter(
+        message => message.message != input.message
+      );
+      if (this.messages.length < 1) {
+        this.wave = false;
+      }
     }
   },
   mounted() {
@@ -76,8 +122,17 @@ export default {
         console.log("Received: '" + e.data + "'");
 
         var wsData = JSON.parse(e.data);
-        if (wsData.room == router.currentRoute.params.room)
-          vueApp.customAlert(wsData.message);
+        if (wsData.room == router.currentRoute.params.room) {
+          console.log(wsData);
+          if (wsData.wave) {
+            vueApp.wave = true;
+            vueApp.customAlert(wsData.message);
+            vueApp.messages.unshift({
+              name: wsData.name,
+              message: wsData.messageText
+            });
+          } else vueApp.customAlert(wsData.message);
+        }
       }
     };
   }

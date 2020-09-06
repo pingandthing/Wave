@@ -1,8 +1,28 @@
 <template>
   <v-container fluid>
+    <h2>Room {{ $route.params.room }}</h2>
     <v-row align="center" justify="center">
-      {{ $route.params.room }}
-      <v-col align="center" justify="center"> </v-col>
+      <!-- {{ $route.params.room }} -->
+
+      <v-col cols="4" align="center" justify="center">
+        <v-text-field
+          label="Name"
+          placeholder="Enter your name"
+          outlined
+          v-model="name"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="6" align="center" justify="center">
+        <v-text-field
+          label="Message"
+          placeholder="Enter your message"
+          outlined
+          v-model="message"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="2" justify="center">
+        <v-btn @click="sendWaveHandler()">Wave Message</v-btn>
+      </v-col>
     </v-row>
 
     <v-snackbar v-model="alert" :multi-line="true" timeout="7500">
@@ -30,12 +50,23 @@ export default {
     //
     alert: false,
     alertText: "No Message",
-    client: null
+    client: null,
+    name: null,
+    message: null
   }),
   methods: {
     customAlert(msg) {
       this.alertText = msg;
       this.alert = true;
+    },
+    sendWaveHandler() {
+      var send = {};
+      send.room = router.currentRoute.params.room;
+      send.message = this.name + " said, " + this.message;
+      send.wave = true;
+      send.name = this.name;
+      send.messageText = this.message;
+      this.client.send(JSON.stringify(send));
     }
   },
   mounted() {
