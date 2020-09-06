@@ -13,7 +13,7 @@
             router
           />
         </router-link>
-        <v-text
+        <v-img
           alt="Wave Name"
           class="shrink mt-1 hidden-sm-and-down"
           contain
@@ -22,7 +22,7 @@
           style="font-size:4 rem"
         >
           Wave
-        </v-text>
+        </v-img>
       </div>
 
       <v-spacer></v-spacer>

@@ -60,7 +60,19 @@
         </v-dialog>
       </v-col>
     </v-row>
-    {{ this.rooms }}
+    <v-divider class="mt-6" />
+    <v-container>
+      <v-row
+        v-for="room in rooms"
+        :key="room + ''"
+        class="mt-4"
+        align="center"
+        justify="center"
+      >
+        <v-btn text :to="'/join/' + room">Join {{ room }}</v-btn>
+      </v-row>
+    </v-container>
+
     <v-snackbar v-model="alert" :multi-line="true" timeout="7500">
       {{ alertText }}
 
@@ -130,6 +142,7 @@ export default {
       }
       this.newRoomName = null;
     },
+
     customAlert(msg) {
       this.alertText = msg;
       this.alert = true;
