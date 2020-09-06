@@ -21,7 +21,7 @@
           width="400"
           style="font-size:4 rem"
         >
-          Wave
+          HoWave
         </v-img>
       </div>
 
