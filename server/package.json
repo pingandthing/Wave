@@ -10,5 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "websocket": "^1.0.32"
+  }
 }
